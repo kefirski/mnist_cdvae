@@ -15,15 +15,15 @@ class Encoder(nn.Module):
             nn.ELU(inplace=True),
             nn.AvgPool2d(2),
 
-            nn.Conv2d(8, 16, kernel_size=2, stride=1, padding=0),
+            nn.Conv2d(8, 14, kernel_size=2, stride=1, padding=0),
             nn.ELU(),
         )
 
-        self.hidden_to_mu = nn.Linear(12, 15)
-        self.hidden_to_logvar = nn.Linear(12, 15)
+        self.hidden_to_mu = nn.Linear(14, 16)
+        self.hidden_to_logvar = nn.Linear(14, 16)
 
     def forward(self, input):
 
-        hidden = self.conv(input).view(-1, 12)
+        hidden = self.conv(input).view(-1, 14)
 
         return self.hidden_to_mu(hidden), self.hidden_to_logvar(hidden)

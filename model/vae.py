@@ -22,7 +22,7 @@ class VAE(nn.Module):
 
         mu = logvar = None
         if z is None:
-            mu, logvar = self.decoder(input)
+            mu, logvar = self.encoder(input)
 
             [batch_size, latent_size] = mu.size()
 
@@ -43,7 +43,7 @@ class VAE(nn.Module):
     @staticmethod
     def divirgence_with_posterior(p_first, p_second):
         """
-        :params p_first, p_second: tuple with parameters of distribution over latent variables
+        :params p_first, p_second: tuples with parameters of distribution over latent variables
         :return: divirgence estimation
         """
 
