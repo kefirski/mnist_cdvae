@@ -1,7 +1,7 @@
 import torch as t
 from torchvision import datasets
 import torchvision.transforms as transforms
-from model.encoder import Encoder
+from model.decoder import Decoder
 from torch.autograd import Variable
 
 if __name__ == '__main__':
@@ -11,7 +11,7 @@ if __name__ == '__main__':
     #                          download=True)
     # dataloader = t.utils.data.DataLoader(dataset, batch_size=2, shuffle=True)
 
-    encoder = Encoder()
+    decoder = Decoder()
 
-    x = Variable(t.randn(1, 1, 28, 28))
-    print(encoder(x))
+    x = Variable(t.randn(1, 16, 1, 1))
+    print(decoder(x))

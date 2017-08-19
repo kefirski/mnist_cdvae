@@ -1,6 +1,5 @@
 import torch as t
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class Encoder(nn.Module):
@@ -16,7 +15,7 @@ class Encoder(nn.Module):
             nn.ELU(inplace=True),
             nn.AvgPool2d(2),
 
-            nn.Conv2d(8, 12, kernel_size=2, stride=1, padding=0),
+            nn.Conv2d(8, 16, kernel_size=2, stride=1, padding=0),
             nn.ELU(),
         )
 
