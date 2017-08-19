@@ -11,7 +11,10 @@ class Decoder(nn.Module):
             nn.Linear(80, 300),
             nn.ELU(inplace=True),
 
-            nn.Linear(300, 784),
+            nn.Linear(300, 500),
+            nn.ELU(inplace=True),
+
+            nn.Linear(500, 784),
             nn.Sigmoid()
 
         )

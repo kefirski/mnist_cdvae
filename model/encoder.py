@@ -7,7 +7,13 @@ class Encoder(nn.Module):
         super(Encoder, self).__init__()
 
         self.conv = nn.Sequential(
-            nn.Linear(784, 400),
+            nn.Linear(784, 600),
+            nn.ELU(inplace=True),
+
+            nn.Linear(600, 500),
+            nn.ELU(inplace=True),
+
+            nn.Linear(500, 400),
             nn.ELU(inplace=True),
 
             nn.Linear(400, 100),
