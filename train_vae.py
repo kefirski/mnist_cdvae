@@ -72,4 +72,6 @@ if __name__ == "__main__":
                 sampling = vutils.make_grid(sampling, scale_each=True)
                 writer.add_image('sampling', sampling, epoch * int(2000/args.batch_size) + iteration)
 
+    writer.close()
+    t.save(vae.state_dict(), 'trained_VAE')
 
