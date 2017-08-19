@@ -70,7 +70,7 @@ if __name__ == "__main__":
                 if args.use_cuda:
                     z = z.cuda()
 
-                sampling = vae(input=None, z=z)
+                sampling, _, _ = vae(input=None, z=z)
 
                 sampling = vutils.make_grid(sampling, scale_each=True)
                 writer.add_image('sampling', sampling, epoch * int(2000/args.batch_size) + iteration)
