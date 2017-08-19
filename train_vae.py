@@ -40,8 +40,8 @@ if __name__ == "__main__":
 
     optimizer = Adam(vae.parameters(), args.learning_rate, eps=1e-6)
 
-    likelihood_function = nn.BCELoss()
-    likelihood_function.size_average = False
+    likelihood_function = nn.MSELoss()
+    # likelihood_function.size_average = False
 
     for epoch in range(args.num_epochs):
         for iteration, (input, _) in enumerate(dataloader):
