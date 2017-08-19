@@ -49,6 +49,9 @@ if __name__ == "__main__":
         for iteration, (input, _) in enumerate(dataloader):
             input = Variable(input)
 
+            if args.use_cuda:
+                input = input.cuda()
+
             optimizer.zero_grad()
 
             out, mu, logvar = vae(input)
