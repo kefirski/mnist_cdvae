@@ -17,14 +17,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='CDVAE')
     parser.add_argument('--num-epochs', type=int, default=20, metavar='NI',
                         help='num epochs (default: 20)')
-    parser.add_argument('--batch-size', type=int, default=20, metavar='BS',
-                        help='batch size (default: 20)')
+    parser.add_argument('--batch-size', type=int, default=100, metavar='BS',
+                        help='batch size (default: 100)')
     parser.add_argument('--use-cuda', type=bool, default=False, metavar='CUDA',
                         help='use cuda (default: False)')
-    parser.add_argument('--learning-rate', type=float, default=0.0005, metavar='LR',
-                        help='learning rate (default: 0.0005)')
-    parser.add_argument('--dropout', type=float, default=0.12, metavar='TDR',
-                        help='dropout (default: 0.12)')
+    parser.add_argument('--learning-rate', type=float, default=0.01, metavar='LR',
+                        help='learning rate (default: 0.01)')
     parser.add_argument('--save', type=str, default=None, metavar='TS',
                         help='path where save trained model to (default: None)')
     args = parser.parse_args()
@@ -56,7 +54,7 @@ if __name__ == "__main__":
 
             out, mu, logvar = vae(input)
 
-            likelihood = likelihood_function(out, input.view(-1, 28, 28))
+            likelihood = likelihood_function(out, input)
             loss = likelihood + VAE.divirgence_with_prior(mu, logvar)
 
             loss.backward()
@@ -66,13 +64,13 @@ if __name__ == "__main__":
 
                 print('epoch {}, iteration {}, loss {}'.format(epoch, iteration, loss.cpu().data.numpy()[0]))
 
-                z = Variable(t.randn(64, 80))
+                z = Variable(t.randn(64, 20))
                 if args.use_cuda:
                     z = z.cuda()
 
                 sampling, _, _ = vae(input=None, z=z)
 
-                sampling = vutils.make_grid(sampling.view(-1, 1, 28, 28).data, scale_each=True)
+                sampling = vutils.make_grid(sampling.data, scale_each=True)
                 writer.add_image('sampling', sampling, epoch * len(dataloader) + iteration)
 
     writer.close()

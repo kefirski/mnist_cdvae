@@ -8,17 +8,14 @@ class Decoder(nn.Module):
 
         self.conv = nn.Sequential(
 
-            nn.Linear(80, 300),
-            nn.ELU(inplace=True),
+            nn.Linear(20, 400),
+            nn.ReLU(inplace=True),
 
-            nn.Linear(300, 500),
-            nn.ELU(inplace=True),
-
-            nn.Linear(500, 784),
+            nn.Linear(400, 784),
             nn.Sigmoid()
 
         )
 
     def forward(self, input):
         result = self.conv(input)
-        return result.view(-1, 28, 28)
+        return result.view(-1, 1, 28, 28)

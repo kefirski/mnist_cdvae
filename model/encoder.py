@@ -7,21 +7,13 @@ class Encoder(nn.Module):
         super(Encoder, self).__init__()
 
         self.conv = nn.Sequential(
-            nn.Linear(784, 600),
-            nn.ELU(inplace=True),
+            nn.Linear(784, 400),
+            nn.ReLU()
 
-            nn.Linear(600, 500),
-            nn.ELU(inplace=True),
-
-            nn.Linear(500, 400),
-            nn.ELU(inplace=True),
-
-            nn.Linear(400, 100),
-            nn.ELU()
         )
 
-        self.hidden_to_mu = nn.Linear(100, 80)
-        self.hidden_to_logvar = nn.Linear(100, 80)
+        self.hidden_to_mu = nn.Linear(400, 20)
+        self.hidden_to_logvar = nn.Linear(400, 20)
 
     def forward(self, input):
         hidden = self.conv(input.view(-1, 28 * 28))
