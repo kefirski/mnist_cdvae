@@ -7,33 +7,15 @@ class Decoder(nn.Module):
         super(Decoder, self).__init__()
 
         self.conv = nn.Sequential(
-            nn.ConvTranspose2d(80, 60, 2, 1, 0, bias=False),
+
+            nn.Linear(80, 300),
             nn.ELU(inplace=True),
 
-            nn.ConvTranspose2d(60, 30, 6, 2, 1, bias=False),
-            nn.ELU(inplace=True),
-
-            nn.ConvTranspose2d(30, 3, 6, 2, 1, bias=False),
-            nn.ELU(inplace=True),
-
-            nn.ConvTranspose2d(3, 1, 6, 2, 2, bias=False),
+            nn.Linear(300, 784),
             nn.Sigmoid()
-
-            # nn.Linear(80, 100),
-            # nn.ELU(inplace=True),
-            #
-            # nn.Linear(100, 300),
-            # nn.ELU(inplace=True),
-            #
-            # nn.Linear(300, 500),
-            # nn.ELU(inplace=True),
-            #
-            # nn.Linear(500, 784),
-            # nn.Sigmoid()
 
         )
 
     def forward(self, input):
-        input = input.unsqueeze(2).unsqueeze(2)
         result = self.conv(input)
         return result.view(-1, 28, 28)

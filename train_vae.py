@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
                 sampling, _, _ = vae(input=None, z=z)
 
-                sampling = vutils.make_grid(sampling.data, scale_each=True)
+                sampling = vutils.make_grid(sampling.view(-1, 1, 28, 28).data, scale_each=True)
                 writer.add_image('sampling', sampling, epoch * len(dataloader) + iteration)
 
     writer.close()
