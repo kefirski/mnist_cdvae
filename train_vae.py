@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     for epoch in range(args.num_epochs):
         for iteration, (input, _) in enumerate(dataloader):
-            input = Variable(input)
+            input = Variable(input).view(-1, 28, 28)
 
             if args.use_cuda:
                 input = input.cuda()
@@ -73,7 +73,7 @@ if __name__ == "__main__":
                 sampling, _, _ = vae(input=None, z=z)
 
                 sampling = vutils.make_grid(sampling, scale_each=True)
-                writer.add_image('sampling', sampling, epoch * int(2000/args.batch_size) + iteration)
+                writer.add_image('sampling', sampling, epoch * len(dataloader) + iteration)
 
     writer.close()
     t.save(vae.state_dict(), 'trained_VAE')
