@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
                 print('epoch {}, iteration {}, loss {}'.format(epoch, iteration, loss.cpu().data.numpy()[0]))
 
-                z = Variable(t.randn(64, 20))
+                z = Variable(t.randn(64, 100))
                 if args.use_cuda:
                     z = z.cuda()
 
