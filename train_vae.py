@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     for epoch in range(args.num_epochs):
         for iteration, (input, _) in enumerate(dataloader):
-            input = Variable(input).view(-1, 28, 28)
+            input = Variable(input)
 
             if args.use_cuda:
                 input = input.cuda()
@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
             out, mu, logvar = vae(input)
 
-            likelihood = likelihood_function(out, input)
+            likelihood = likelihood_function(out, input.view(-1, 28, 28))
             loss = likelihood + VAE.divirgence_with_prior(mu, logvar)
 
             loss.backward()
