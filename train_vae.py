@@ -66,13 +66,13 @@ if __name__ == "__main__":
 
                 print('epoch {}, iteration {}, loss {}'.format(epoch, iteration, loss.cpu().data.numpy()[0]))
 
-                z = Variable(t.randn(64, 16))
+                z = Variable(t.randn(64, 80))
                 if args.use_cuda:
                     z = z.cuda()
 
                 sampling, _, _ = vae(input=None, z=z)
 
-                sampling = vutils.make_grid(sampling, scale_each=True)
+                sampling = vutils.make_grid(sampling.data, scale_each=True)
                 writer.add_image('sampling', sampling, epoch * len(dataloader) + iteration)
 
     writer.close()
