@@ -43,6 +43,10 @@ if __name__ == "__main__":
     likelihood_function = nn.BCELoss()
     likelihood_function.size_average = False
 
+    z = Variable(t.randn(256, 50))
+    if args.use_cuda:
+        z = z.cuda()
+
     for epoch in range(args.num_epochs):
         for iteration, (input, _) in enumerate(dataloader):
             input = Variable(input)
@@ -64,13 +68,9 @@ if __name__ == "__main__":
 
                 print('epoch {}, iteration {}, loss {}'.format(epoch, iteration, loss.cpu().data.numpy()[0]))
 
-                z = Variable(t.randn(64, 100))
-                if args.use_cuda:
-                    z = z.cuda()
-
                 sampling, _, _ = vae(input=None, z=z)
 
-                sampling = vutils.make_grid(sampling.data, scale_each=True)
+                sampling = vutils.make_grid(sampling.data, scale_each=True, nrow=16)
                 writer.add_image('sampling', sampling, epoch * len(dataloader) + iteration)
 
     writer.close()
