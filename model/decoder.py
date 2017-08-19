@@ -1,21 +1,15 @@
 import torch as t
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
 
-        self.conv = nn.Sequential(
-
-            nn.Linear(20, 400),
-            nn.ReLU(inplace=True),
-
-            nn.Linear(400, 784),
-            nn.Sigmoid()
-
-        )
+        self.input = nn.Linear(100, 128)
+        self.out = nn.Linear(128, 784)
 
     def forward(self, input):
-        result = self.conv(input)
-        return result.view(-1, 1, 28, 28)
+        hidden = F.relu(self.input(input))
+        return F.sigmoid(self.out(hidden)).view(-1, 1, 28, 28)

@@ -40,8 +40,8 @@ if __name__ == "__main__":
 
     optimizer = Adam(vae.parameters(), args.learning_rate, eps=1e-6)
 
-    likelihood_function = nn.MSELoss()
-    # likelihood_function.size_average = False
+    likelihood_function = nn.BCELoss()
+    likelihood_function.size_average = False
 
     for epoch in range(args.num_epochs):
         for iteration, (input, _) in enumerate(dataloader):
@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
             out, mu, logvar = vae(input)
 
-            likelihood = likelihood_function(out, input)
+            likelihood = likelihood_function(out, input) / args.batch_size
             loss = likelihood + VAE.divirgence_with_prior(mu, logvar)
 
             loss.backward()
@@ -75,4 +75,3 @@ if __name__ == "__main__":
 
     writer.close()
     t.save(vae.state_dict(), 'trained_VAE')
-
