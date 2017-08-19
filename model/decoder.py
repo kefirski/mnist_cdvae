@@ -22,4 +22,5 @@ class Decoder(nn.Module):
         )
 
     def forward(self, input):
+        input = input.unsqueeze(2).unsqueeze(2)
         return self.conv(input)
