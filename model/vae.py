@@ -34,7 +34,7 @@ class VAE(nn.Module):
 
             z = z * std + mu
 
-        return self.decoder(z), mu, logvar
+        return self.decoder(z), mu, logvar, z
 
     def encode(self, input):
         return self.encoder(input)
@@ -53,5 +53,5 @@ class VAE(nn.Module):
         :return: divirgence estimation
         """
 
-        return 0.5 * t.sum(p_second[1] - p_first[1] + t.exp(p_first[1]) / (t.exp(p_second[1]) + 1e-8) +
+        return 0.5 * t.sum(2 * p_second[1] - 2 * p_first[1] + t.exp(p_first[1]) / (t.exp(p_second[1]) + 1e-8) +
                            t.pow(p_second[0] - p_second[0], 2) / (t.exp(p_second[1]) + 1e-8) - 1).mean()

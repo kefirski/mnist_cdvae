@@ -19,6 +19,32 @@ def reflect_tensor(tensor, axis):
     return t.from_numpy(tensor.copy())
 
 
+def train_step(models, input, optimizers, criterion):
+    [batch_size, _, _, _] = input[0].size()
+
+    optimizers[0].zero_grad()
+
+    first_out, first_mu, first_logvar, first_z = models[0](input[0])
+    second_out, second_mu, second_logvar, second_z = models[1](input[1])
+
+    first_likelihood = criterion(first_out, input[0]) / batch_size
+    first_aux_likelihood = criterion(models[1].decode(first_z), input[1]) / batch_size
+
+    second_likelihood = criterion(second_out, input[1]) / batch_size
+    second_aux_likelihood = criterion(models[0].decode(second_z), input[0]) / batch_size
+
+    first_loss = first_likelihood + first_aux_likelihood + VAE.divirgence_with_prior(first_mu, first_logvar)
+    second_loss = second_likelihood + second_aux_likelihood + VAE.divirgence_with_prior(second_mu, second_logvar)
+
+    first_loss.backward(retain_graph=True)
+    optimizers[0].step()
+
+    second_loss.backward()
+    optimizers[1].step()
+
+    return first_loss, second_loss
+
+
 if __name__ == "__main__":
 
     if not os.path.exists('cross_domain_sampling'):
@@ -54,11 +80,11 @@ if __name__ == "__main__":
 
     noisy_vae = VAE()
     prior_vae = VAE()
-    prior_vae.load_state_dict(t.load(args.saved))
     if args.use_cuda:
         noisy_vae, prior_vae = noisy_vae.cuda(), prior_vae.cuda()
 
-    optimizer = Adam(noisy_vae.parameters(), args.learning_rate, eps=1e-6)
+    prior_optimizer = Adam(prior_vae.parameters(), args.learning_rate, eps=1e-6)
+    noisy_optimizer = Adam(noisy_vae.parameters(), args.learning_rate, eps=1e-6)
 
     likelihood_function = nn.BCEWithLogitsLoss(size_average=False)
 
@@ -81,20 +107,20 @@ if __name__ == "__main__":
             if args.use_cuda:
                 prior_input, noisy_input = prior_input.cuda(), noisy_input.cuda()
 
-            optimizer.zero_grad()
-
-            noisy_out, noisy_mu, noisy_logvar = noisy_vae(noisy_input)
-            prior_mu, prior_logvar = prior_vae.encode(prior_input)
-
-            likelihood = likelihood_function(noisy_out, noisy_input) / args.batch_size
-            loss = likelihood + VAE.divirgence_with_posterior((noisy_mu, noisy_logvar), (prior_mu, prior_logvar)) + VAE.divirgence_with_prior(noisy_mu, noisy_logvar)
-            # loss = likelihood + VAE.divirgence_with_posterior((noisy_mu, noisy_logvar), (prior_mu, prior_logvar))
-
-            loss.backward()
-            optimizer.step()
+            if iteration % 2 == 0:
+                first_loss, second_loss = train_step((prior_vae, noisy_vae),
+                                                     (prior_input, noisy_input),
+                                                     (prior_optimizer, noisy_optimizer),
+                                                     likelihood_function)
+            else:
+                first_loss, second_loss = train_step((noisy_vae, prior_vae),
+                                                     (noisy_input, prior_input),
+                                                     (noisy_optimizer, prior_optimizer),
+                                                     likelihood_function)
 
             if iteration % 10 == 0:
-                print('epoch {}, iteration {}, loss {}'.format(epoch, iteration, loss.cpu().data.numpy()[0]))
+                print('epoch {}, iteration {}, first loss {}, second loss {}'
+                      .format(epoch, iteration, first_loss.cpu().data.numpy()[0], second_loss.cpu().data.numpy()[0]))
 
                 mu, logvar = noisy_vae.encode(noisy_valid)
 
