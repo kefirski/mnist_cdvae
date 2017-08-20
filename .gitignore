@@ -11,6 +11,7 @@ __pycache__/
 experimentation.py
 data/
 .idea/
+prior_sampling/
 env/
 build/
 develop-eggs/
@@ -103,3 +104,7 @@ ENV/
 # mypy
 .mypy_cache/
 /experimentation.py
+/prior_sampling/
+/cross_domain_sampling/
+/trained_prior_vae
+/vae/

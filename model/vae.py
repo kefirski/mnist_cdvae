@@ -36,6 +36,12 @@ class VAE(nn.Module):
 
         return self.decoder(z), mu, logvar
 
+    def encode(self, input):
+        return self.encoder(input)
+
+    def decode(self, input):
+        return self.decoder(input)
+
     @staticmethod
     def divirgence_with_prior(mu, logvar):
         return (-0.5 * t.sum(logvar - t.pow(mu, 2) - t.exp(logvar) + 1, 1)).mean()

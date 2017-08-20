@@ -7,9 +7,12 @@ class Decoder(nn.Module):
     def __init__(self):
         super(Decoder, self).__init__()
 
-        self.input = nn.Linear(50, 528)
-        self.out = nn.Linear(528, 784)
+        self.fc = nn.Sequential(
+            nn.Linear(20, 1500),
+            nn.ReLU(inplace=True),
+
+            nn.Linear(1500, 784),
+        )
 
     def forward(self, input):
-        hidden = F.relu(self.input(input))
-        return F.sigmoid(self.out(hidden)).view(-1, 1, 28, 28)
+        return self.fc(input).view(-1, 1, 28, 28)
