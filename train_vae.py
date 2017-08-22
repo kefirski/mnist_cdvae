@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
             optimizer.zero_grad()
 
-            out, mu, logvar = vae(input)
+            out, mu, logvar, _ = vae(input)
 
             likelihood = likelihood_function(out, input) / args.batch_size
             loss = likelihood + VAE.divirgence_with_prior(mu, logvar)
@@ -65,7 +65,7 @@ if __name__ == "__main__":
             if iteration % 10 == 0:
                 print('epoch {}, iteration {}, loss {}'.format(epoch, iteration, loss.cpu().data.numpy()[0]))
 
-                sampling, _, _ = vae(input=None, z=z)
+                sampling, _, _, _ = vae(input=None, z=z)
 
                 grid = make_grid(F.sigmoid(sampling).cpu().data, 16, 28)
                 vutils.save_image(grid, 'prior_sampling/vae_{}.png'.format(epoch * len(dataloader) + iteration))
