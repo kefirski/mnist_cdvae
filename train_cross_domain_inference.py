@@ -33,8 +33,8 @@ def train_step(models, input, optimizers, criterion):
     second_likelihood = criterion(second_out, input[1]) / batch_size
     second_aux_likelihood = criterion(models[0].decode(second_z), input[0]) / batch_size
 
-    first_loss = first_likelihood + first_aux_likelihood + VAE.divirgence_with_prior(first_mu, first_logvar)
-    second_loss = second_likelihood + second_aux_likelihood + VAE.divirgence_with_prior(second_mu, second_logvar)
+    first_loss = first_likelihood + first_aux_likelihood + VAE.divergence_with_prior(first_mu, first_logvar)
+    second_loss = second_likelihood + second_aux_likelihood + VAE.divergence_with_prior(second_mu, second_logvar)
 
     first_loss.backward(retain_graph=True)
     optimizers[0].step()
